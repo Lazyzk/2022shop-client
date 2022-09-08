@@ -14,6 +14,7 @@ import Footer from './components/Footer';
 export default {
   name: "App",
   mounted() {
+    //派遣数据
     this.$store.dispatch('getCategoryList')
   },
   components: { Header, Footer }
