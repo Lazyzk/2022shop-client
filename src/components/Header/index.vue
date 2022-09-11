@@ -61,15 +61,16 @@ export default {
       // this.$router.push(`/search/${this.keyword}`)
       const location = {
         name: 'search',
+        query: this.$route.query
       }
       //只有有数据时，才携带params参数
       if (this.keyword) {
         location.params = {
           keyword: this.keyword
-        },
-          location.query = {
-            keyword2: this.keyword.toUpperCase()
-          }
+        }
+        // location.query = {
+        //   keyword2: this.keyword.toUpperCase()
+        // }
       }
       this.$router.push(location)
     }

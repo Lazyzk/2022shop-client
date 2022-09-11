@@ -15,7 +15,8 @@ export default {
   name: "App",
   mounted() {
     //派遣数据
-    this.$store.dispatch('getCategoryList')
+    this.$store.dispatch('getCategoryList'),
+      this.$store.dispatch('getBannerList')
   },
   components: { Header, Footer }
 }
