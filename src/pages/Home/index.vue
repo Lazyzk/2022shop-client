@@ -5,13 +5,13 @@
     <TodayRecommend></TodayRecommend>
     <Rank></Rank>
     <Like></Like>
-    <Floor></Floor>
-    <Floor></Floor>
+    <Floor v-for="floor in floors" :key="floor.id" :floor="floor"></Floor>
     <Brand></Brand>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import TypeNav from '@/components/TypeNav/index.vue';
 import ListContainer from './ListContainer/index.vue';
 import TodayRecommend from './TodayRecommend/index.vue';
@@ -29,6 +29,15 @@ export default {
     return {
 
     }
+  },
+  mounted() {
+    this.$store.dispatch('getRecommends')
+    this.$store.dispatch('getFloors')
+  },
+  computed: {
+    ...mapState({
+      floors: state => state.home.floors
+    })
   },
 }
 

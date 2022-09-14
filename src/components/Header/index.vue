@@ -73,9 +73,14 @@ export default {
         // }
       }
       this.$router.push(location)
+    },
+    clearKeyword() {
+      this.keyword = ''
     }
   },
-  mounted() { },
+  mounted() {
+    this.$bus.$on('clearKeyword', this.clearKeyword)
+  },
   created() { }
 }
 
