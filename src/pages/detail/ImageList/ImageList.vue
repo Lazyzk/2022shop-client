@@ -1,21 +1,49 @@
 <template>
-  <div class="swiper-container">
-    <div class="swiper-wrapper">
-      <div class="swiper-slide" v-for="(img,index) in imgList" :key="img.id">
-        <img :src="img.imgUrl">
-      </div>
-    </div>
-    <div class="swiper-button-next"></div>
-    <div class="swiper-button-prev"></div>
-  </div>
+  <swiper :options="swiperOptions">
+    <swiper-slide v-for="(img,index) in imgList" :key="img.id">
+      <img :src="img.imgUrl" :class="{active:index === defaultIndex}" @click="changeDefaultIndex(index)">
+    </swiper-slide>
+    <div class="swiper-pagination" slot="pagination"></div>
+    <div class="swiper-button-prev" slot="button-prev"></div>
+    <div class="swiper-button-next" slot="button-next"></div>
+  </swiper>
 </template>
 
 <script>
 
-import Swiper from 'swiper'
+// import Swiper from 'swiper'
 export default {
   name: "ImageList",
-  props: ['imgList']
+  props: ['imgList'],
+  data() {
+    return {
+      defaultIndex: 0,
+      swiperOptions: {
+        // loop: true,// 循环模式选项
+        // autoplay: {  //自动循环
+        //   delay: 4000,
+        //   disableOnInteraction: false,
+        // },
+        // 如果需要分页器
+        // pagination: {
+        //   el: '.swiper-pagination',
+        // },
+        slidesPerView: 5,
+        slidesPerGroup: 5,
+        // 如果需要前进后退按钮
+        navigation: {
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev',
+        },
+      }
+    }
+  },
+  methods: {
+    changeDefaultIndex(index) {
+      this.defaultIndex = index
+      this.$bus.$emit('syncDefaultIndex', index)
+    }
+  }
 }
 </script>
 
@@ -44,10 +72,10 @@ export default {
         padding: 1px;
       }
 
-      &:hover {
-        border: 2px solid #f60;
-        padding: 1px;
-      }
+      // &:hover {
+      //   border: 2px solid #f60;
+      //   padding: 1px;
+      // }
     }
   }
 

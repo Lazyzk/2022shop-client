@@ -65,18 +65,24 @@
               <div class="choosed"></div>
               <dl v-for="(spuSaleAttr,index) in spuSaleAttrList" :key="spuSaleAttr.id">
                 <dt class="title">{{spuSaleAttr.saleAttrName}}</dt>
-                <dd changepirce="0" class="active" v-for="(spuSaleAttrValue,index) in spuSaleAttr.spuSaleAttrValueList"
-                  :key="spuSaleAttrValue.id">{{spuSaleAttrValue.saleAttrValueName}}</dd>
+                <dd changepirce="0" :class="{active:spuSaleAttrValue.isChecked==='1'}"
+                  v-for="(spuSaleAttrValue,index) in spuSaleAttr.spuSaleAttrValueList" :key="spuSaleAttrValue.id"
+                  @click="changeChecked(spuSaleAttrValue,spuSaleAttr.spuSaleAttrValueList)">
+                  {{spuSaleAttrValue.saleAttrValueName}}</dd>
               </dl>
             </div>
             <div class="cartWrap">
               <div class="controls">
-                <input autocomplete="off" class="itxt">
-                <a href="javascript:" class="plus">+</a>
-                <a href="javascript:" class="mins">-</a>
+                <!-- change事件 失去焦点的时候触发，但内容必须发生变化 
+                input事件 输入时同步触发
+                blur事件失去焦点时就会触发，不管内容有没有变化
+                -->
+                <input autocomplete="off" class="itxt" v-model="skuNum" @change="skuNum=skuNum>=1?parseInt(skuNum):1">
+                <a href="javascript:" class="plus" @click="skuNum++">+</a>
+                <a href="javascript:" class="mins" @click="skuNum>1?skuNum--:skuNum=1">-</a>
               </div>
               <div class="add">
-                <a href="javascript:">加入购物车</a>
+                <a href="javascript:" @click="addToCart">加入购物车</a>
               </div>
             </div>
           </div>
@@ -335,6 +341,7 @@ export default {
   data() {
     return {
       skuId: "",
+      skuNum: 1
     }
   },
   components: {
@@ -356,6 +363,22 @@ export default {
   methods: {
     getSkuDetailInfo() {
       this.$store.dispatch('getSkuDetailInfo', this.skuId)
+    },
+    changeChecked(spuSaleAttrValue, spuSaleAttrValueList) {
+      spuSaleAttrValueList.forEach(item => item.isChecked = '0')
+      spuSaleAttrValue.isChecked = '1'
+    },
+    async addToCart() {
+      let { skuId, skuNum } = this
+      try {
+        await this.$store.dispatch('addOrUpdateCart', { skuId, skuNum })
+        alert('添加购物车成功')
+
+        sessionStorage.setItem('SKUINUFO_KEY', JSON.stringify(this.skuInfo))
+        this.$router.push('/addCartSuccess?skuNum='+this.skuNum)
+      } catch (error) {
+        alert(error.message)
+      }
     }
   }
 }

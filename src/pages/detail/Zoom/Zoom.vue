@@ -1,11 +1,11 @@
 <template>
   <div class="spec-preview">
     <img :src="defaultImg.imgUrl" />
-    <div class="event"></div>
+    <div class="event" @mousemove="move"></div>
     <div class="big">
-      <img :src="defaultImg.imgUrl" />
+      <img :src="defaultImg.imgUrl" ref="big" />
     </div>
-    <div class="mask"></div>
+    <div class="mask" ref="mask"></div>
   </div>
 </template>
 
@@ -16,6 +16,43 @@ export default {
   data() {
     return {
       defaultIndex: 0
+    }
+  },
+  mounted() {
+    this.$bus.$on('syncDefaultIndex', this.syncDefaultIndex)
+  },
+  methods: {
+    syncDefaultIndex(index) {
+      this.defaultIndex = index
+    },
+    move(event) {
+      // 鼠标位置
+      let mouseX = event.offsetX
+      let mouseY = event.offsetY
+      // 获取遮罩
+      let mask = this.$refs.mask
+      //获取大图
+      let big = this.$refs.big
+      //让遮罩中心跟随鼠标
+      let maskX = mouseX - mask.offsetWidth / 2
+      let maskY = mouseY - mask.offsetHeight / 2
+      //判断边界
+      if (maskX < 0) {
+        maskX = 0
+      } else if (maskX > mask.offsetWidth) {
+        maskX = mask.offsetWidth
+      }
+      if (maskY < 0) {
+        maskY = 0
+      } else if (maskY > mask.offsetHeight) {
+        maskY = mask.offsetHeight
+      }
+      // 移动遮罩
+      mask.style.left = maskX + 'px'
+      mask.style.top = maskY + 'px'
+      // 移动大图
+      big.style.left = -maskX * 2 + 'px'
+      big.style.top = -maskY * 2 + 'px'
     }
   },
   computed: {

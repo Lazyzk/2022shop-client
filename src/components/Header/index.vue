@@ -5,15 +5,23 @@
       <div class="container">
         <div class="loginList">
           <p>尚品汇欢迎您！</p>
-          <p>
+          <p v-if="$store.state.user.userInfo.name">
+            <a href="javascript:;">{{$store.state.user.userInfo.name}}</a>
+            <a href="javascript:;" class="register" @click="logout">退出登录</a>
+          </p>
+          <p v-else>
             <span>请</span>
-            <a href="###">登录</a>
-            <a href="###" class="register">免费注册</a>
+            <!-- <a href="###">登录</a> -->
+            <router-link to="/login">登录</router-link>
+            <!-- <a href="###" class="register">免费注册</a> -->
+            <router-link to="/register">免费注册</router-link>
           </p>
         </div>
         <div class="typeList">
-          <a href="###">我的订单</a>
-          <a href="###">我的购物车</a>
+          <!-- <a href="javascript:;">我的订单</a> -->
+          <router-link to="/center">我的订单</router-link>
+          <router-link to="/shopCart">我的购物车</router-link>
+          <!-- <a href="###">我的购物车</a> -->
           <a href="###">我的尚品汇</a>
           <a href="###">尚品汇会员</a>
           <a href="###">企业采购</a>
@@ -72,10 +80,25 @@ export default {
         //   keyword2: this.keyword.toUpperCase()
         // }
       }
-      this.$router.push(location)
+      // this.$router.push(location)
+      if (this.$route.name === "search") { // 当前是搜索
+        this.$router.replace(location)
+      } else {
+        this.$router.push(location)
+      }
     },
     clearKeyword() {
       this.keyword = ''
+    },
+    async logout(){
+      try {
+        await this.$store.dispatch('userLogout')
+        alert('退出成功')
+        this.$router.push('/')
+      } catch (error) {
+        alert(error.message)
+      }
+      
     }
   },
   mounted() {

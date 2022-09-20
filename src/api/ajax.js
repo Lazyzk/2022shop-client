@@ -8,6 +8,7 @@
 import axios from "axios";
 import NProgress from "nprogress";
 import 'nprogress/nprogress.css'
+import store from '@/store'
 
 NProgress.configure({ showSpinner: false })
 const service = axios.create({
@@ -19,6 +20,15 @@ service.interceptors.request.use((config) => {
 
   //显示请求进度条
   NProgress.start()
+  let userTempId = store.state.user.userTempId
+  if (userTempId) {
+    config.headers.userTempId = userTempId
+  }
+   //携带登录后标识token
+  let token = store.state.user.token
+  if (token) {
+    config.headers.token = token
+  }
   return config
 })
 service.interceptors.response.use(
